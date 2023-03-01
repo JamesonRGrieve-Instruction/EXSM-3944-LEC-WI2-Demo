@@ -22,7 +22,7 @@ namespace EXSM3944_Demo.Controllers
         // Privacy Action of the HomeController goes to Views/Home/Privacy.cshtml
         public IActionResult Privacy(string id)
         {
-            ViewData["ID"] = id == null ? "0" : id;
+            ViewData["ID"] = id;
 
             return View();
         }

@@ -32,9 +32,9 @@
                         @{
                             foreach(NavigationItem navItem in navigation)
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="@navItem.Controller" asp-action="@navItem.Action" asp-route-id="@navItem.ID">@navItem.Name</a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-controller="@navItem.Controller" asp-action="@navItem.Action" asp-route-id="@navItem.ID">@navItem.Name</a>
+                                    </li>
                             }
                         }
                     </ul>
@@ -46,6 +46,7 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        @RenderSection("Aside", required: false)
     </div>
 
     <footer class="border-top footer text-muted">

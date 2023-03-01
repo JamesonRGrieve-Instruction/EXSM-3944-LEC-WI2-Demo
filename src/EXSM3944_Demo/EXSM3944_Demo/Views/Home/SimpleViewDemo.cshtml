@@ -4,11 +4,20 @@
 @{
     if (ViewData["Error"] != null)
     {
-        <p>Error: @(((Exception)ViewData["Error"]).Message)</p>
+    <p>Error: @(((Exception)ViewData["Error"]).Message)</p>
     }
     else
     {
-        <p>Your view works!</p>
-        <p>You selected the ID @ViewData["ID"].</p>
+    <p>Your view works!</p>
+    <p>You selected the ID @ViewData["ID"].</p>
     }
+}
+
+@*
+    This section will get rendered in place of the RenderSection("Aside") call of the _Layout view template.
+*@
+@section Aside {
+    <aside>
+        <p>This is an aside of the simple view page!</p>
+    </aside>
 }

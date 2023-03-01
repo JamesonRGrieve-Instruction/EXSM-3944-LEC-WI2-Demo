@@ -13,13 +13,16 @@ namespace EXSM3944_Demo.Controllers
             _logger = logger;
         }
 
+        // Index Action of the HomeController goes to Views/Home/Index.cshtml
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        // Privacy Action of the HomeController goes to Views/Home/Privacy.cshtml
+        public IActionResult Privacy(string id = "0")
         {
+            ViewData["ID"] = id;
             return View();
         }
 

@@ -3,7 +3,7 @@
     {
         new NavigationItem("Home", "Home", "Index"),
         new NavigationItem("Privacy Policy", "Home", "Privacy"),
-        new NavigationItem("Simple View", "Home", "SimpleViewDemo"),
+        new NavigationItem("Simple View", "Home", "SimpleViewDemo", "42"),
         new NavigationItem("Form Example", "Home", "SimpleFormDemo")
     };
 }
@@ -33,7 +33,7 @@
                             foreach(NavigationItem navItem in navigation)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="@navItem.Controller" asp-action="@navItem.Action">@navItem.Name</a>
+                                    <a class="nav-link text-dark" asp-controller="@navItem.Controller" asp-action="@navItem.Action" asp-route-id="@navItem.ID">@navItem.Name</a>
                                 </li>
                             }
                         }

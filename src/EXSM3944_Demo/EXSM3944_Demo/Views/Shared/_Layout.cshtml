@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@{
+    NavigationItem[] navigation = new NavigationItem[]
+    {
+        new NavigationItem("Home", "Home", "Index"),
+        new NavigationItem("Privacy Policy", "Home", "Privacy"),
+        new NavigationItem("Simple View", "Home", "SimpleViewDemo"),
+        new NavigationItem("Form Example", "Home", "SimpleFormDemo")
+    };
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,12 +29,14 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @{
+                            foreach(NavigationItem navItem in navigation)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="@navItem.Controller" asp-action="@navItem.Action">@navItem.Name</a>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
             </div>

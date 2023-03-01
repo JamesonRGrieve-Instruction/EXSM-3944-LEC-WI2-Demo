@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Simple View";
+}
+@{
+    if (ViewData["Error"] != null)
+    {
+        <p>Error: @(((Exception)ViewData["Error"]).Message)</p>
+    }
+    else
+    {
+        <p>Your view works!</p>
+        <p>You selected the ID @ViewData["ID"].</p>
+    }
+}

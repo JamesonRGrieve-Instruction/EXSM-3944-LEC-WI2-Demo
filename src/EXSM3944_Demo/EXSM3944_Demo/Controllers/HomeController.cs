@@ -20,10 +20,16 @@ namespace EXSM3944_Demo.Controllers
         }
 
         // Privacy Action of the HomeController goes to Views/Home/Privacy.cshtml
-        public IActionResult Privacy(string id)
+        public IActionResult Privacy()
         {
-            ViewData["ID"] = id;
+            return View();
+        }
 
+        public IActionResult SimpleViewDemo(string id)
+        {
+            if (id == null) ViewData["Error"] = new ArgumentNullException(nameof(id));
+
+            ViewData["ID"] = id;
             return View();
         }
 

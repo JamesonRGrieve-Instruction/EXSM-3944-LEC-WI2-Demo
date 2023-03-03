@@ -33,7 +33,30 @@ namespace EXSM3944_Demo.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult SimpleFormDemo(string firstName, string lastName)
+        {
+            // On the initial load it will be a "GET" request. If the form submits it will be a "POST" request.
+            if (HttpContext.Request.Method == "POST")
+            {
+                // We only want to validate in the event of a form submission. Otherwise we will start the form with a bunch of "null argument" errors.
+                ValidationException error = new ValidationException();
+                if (firstName == null) error.InnerExceptions.Add(new ArgumentNullException(nameof(firstName)));
+                if (lastName == null) error.InnerExceptions.Add(new ArgumentNullException(nameof(lastName)));
+                if (error.InnerExceptions.Count > 0) ViewData["Error"] = error;
+                ViewData["FirstName"] = firstName;
+                ViewData["LastName"] = lastName;
+            }
+
+            return View();
+        }
+        public IActionResult SimpleFormDemoOutput(string firstName, string lastName)
+        {
+            ViewData["FirstName"] = firstName;
+            ViewData["LastName"] = lastName;
+            return View();
+        }
+
+            [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

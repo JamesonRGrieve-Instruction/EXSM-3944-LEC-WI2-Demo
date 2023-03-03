@@ -1,0 +1,29 @@
+﻿@{
+    if (ViewData["Error"] != null)
+    {
+    <ul>
+    @{
+        foreach (Exception exception in ((ValidationException)ViewData["Error"]).InnerExceptions)
+        {
+            <li>@exception.Message</li>
+        }
+    }
+    </ul>
+    }
+}
+<p>@ViewData["FirstName"] @ViewData["LastName"]</p>
+<form asp-controller="Home" asp-action="SimpleFormDemo">
+    <label for="firstName">First Name</label>
+    <input id="firstName" name="firstName" type="text" value="@ViewData["FirstName"]" />
+    <label for="lastName">Last Name</label>
+    <input id="lastName" name="lastName" type="text" value="@ViewData["LastName"]" />
+    <input id="submit" name="submit" type="submit" />
+</form>
+
+<form asp-controller="Home" asp-action="SimpleFormDemoOutput">
+    <label for="firstName">First Name</label>
+    <input id="firstName" name="firstName" type="text" value="@ViewData["FirstName"]" />
+    <label for="lastName">Last Name</label>
+    <input id="lastName" name="lastName" type="text" value="@ViewData["LastName"]" />
+    <input id="submit" name="submit" type="submit" />
+</form>

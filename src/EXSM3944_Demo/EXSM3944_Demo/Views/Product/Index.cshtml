@@ -1,13 +1,14 @@
-﻿@model List<Product>
+﻿@model IEnumerable<Product>
 @{
 }
-<h1>Product Summary - @Model.Count Products</h1>
+<h1>Product Summary - @(((List<Product>)Model).Count) Products</h1>
+<a asp-action="Create">Create A New Product</a>
 <table>
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
+            <th>@Html.DisplayNameFor(model => model.ID)</th>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
             <th></th>
             <th></th>
             <th></th>
@@ -17,9 +18,9 @@
         @foreach (Product product in Model)
         {
             <tr>
-                <td>@product.ID</td>
-                <td>@product.Name</td>
-                <td>@product.Description</td>
+                <td>@Html.DisplayFor(modelInstance => product.ID)</td>
+                <td>@Html.DisplayFor(modelInstance => product.Name)</td>
+                <td>@Html.DisplayFor(modelInstance => product.Description)</td>
                 <td><a asp-action="Details" asp-route-id="@product.ID">Details</a></td>
                 <td><a asp-action="Edit" asp-route-id="@product.ID">Edit</a></td>
                 <td><a asp-action="Delete" asp-route-id="@product.ID">Delete</a></td>

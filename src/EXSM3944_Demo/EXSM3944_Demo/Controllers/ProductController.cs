@@ -11,14 +11,14 @@ namespace EXSM3944_Demo.Controllers
         // GET: ProductController
         public ActionResult Index()
         {
-            Products.Add(new Product() { ID = 1, Name = "Sample", Description = "Sample Product" });
+            if (Products.Count <1) Products.Add(new Product() { ID = 1, Name = "Sample", Description = "Sample Product" });
             return View(Products);
         }
 
         // GET: ProductController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return View(Products.Single(product => product.ID == id));
         }
 
         // GET: ProductController/Create
@@ -30,52 +30,74 @@ namespace EXSM3944_Demo.Controllers
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create([FromForm]Product product)
         {
+            // Validate Arguments Exist
+            // MVC does this usually.
+
+            // Format Arguments
+            // We'll probably have to do this.
+            product.Name = product.Name.Trim();
+            product.Description = product.Description.Trim();
+
+            // Single Argument Validation
+            // MVC does this if you annotate your model properly.
+
+            // Multi Argument Validation
+            // MVC probably won't do this but it isn't necessary for basic models.
+
+            // Determine Return
+
             try
             {
+                Products.Add(product);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(product);
             }
         }
 
         // GET: ProductController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(Products.Single(product => product.ID == id));
         }
 
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit([FromForm]Product product)
         {
             try
             {
+                Product target = Products.Single(productSearch => productSearch.ID == product.ID);
+                target.ID = product.ID;
+                target.Name = product.Name.Trim();
+                target.Description = product.Description.Trim();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(product);
             }
         }
 
         // GET: ProductController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            return View(Products.Single(product => product.ID == id));
         }
 
         // POST: ProductController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, [FromForm] Product product)
         {
             try
             {
+                Products.Remove(Products.Single(productSearch => productSearch.ID == id));
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -30,7 +30,7 @@ namespace EXSM3944_Demo.Controllers
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromForm]Product product)
+        public ActionResult Create([FromForm] Product product)
         {
             // Validate Arguments Exist
             // MVC does this usually.
@@ -42,21 +42,31 @@ namespace EXSM3944_Demo.Controllers
 
             // Single Argument Validation
             // MVC does this if you annotate your model properly.
+            if (product.Name == "Sample")
+            {
+                ModelState.AddModelError(nameof(product.Name), "Please don't put sample products in here.");
+            }
+            if (Products.Any(productSearch => productSearch.ID == product.ID))
+            {
+                ModelState.AddModelError(nameof(product.ID), "That ID exists already.");
+            }
 
             // Multi Argument Validation
             // MVC probably won't do this but it isn't necessary for basic models.
 
             // Determine Return
 
-            try
+
+            if (ModelState.IsValid)
             {
                 Products.Add(product);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            else
             {
                 return View(product);
             }
+
         }
 
         // GET: ProductController/Edit/5

@@ -1,9 +1,11 @@
 ﻿using EXSM3944_Demo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EXSM3944_Demo.Controllers
 {
+    [Authorize]
     public class VehicleController : Controller
     {
         private static List<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
@@ -33,6 +35,11 @@ namespace EXSM3944_Demo.Controllers
         {
             try
             {
+                // TODO: Validate VIN uppercase.
+                // TODO: Validate VIN unique.
+                // TODO: Validate ModelYear less than or equal to current year plus one.
+                // TODO: Valudate PurchaseDate on or before current date.
+                // TODO: Validate SaleDate after PurchaseDate.
                 vehicle.UserID = User.Identity.Name;
                 Vehicles.Add(vehicle);
                 return RedirectToAction(nameof(Index));

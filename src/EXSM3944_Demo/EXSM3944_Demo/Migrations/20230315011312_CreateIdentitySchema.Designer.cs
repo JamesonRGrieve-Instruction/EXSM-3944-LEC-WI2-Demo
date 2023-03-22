@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EXSM3944_Demo.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(IdentityDatabaseContext))]
     [Migration("20230315011312_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {

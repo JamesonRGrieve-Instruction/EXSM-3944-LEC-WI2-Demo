@@ -12,12 +12,13 @@ namespace EXSM3944_Demo
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            builder.Services.AddDbContext<IdentityDatabaseContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 4, 24))));
+            builder.Services.AddDbContext<PersonDatabaseContext>();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<IdentityDatabaseContext>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

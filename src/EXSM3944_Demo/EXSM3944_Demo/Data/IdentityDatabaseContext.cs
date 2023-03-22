@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EXSM3944_Demo.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class IdentityDatabaseContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public IdentityDatabaseContext(DbContextOptions<IdentityDatabaseContext> options)
             : base(options)
         {
         }

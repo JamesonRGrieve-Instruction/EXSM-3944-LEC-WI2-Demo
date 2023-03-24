@@ -28,6 +28,7 @@ namespace EXSM3944_Demo.Controllers
             return View();
         }
 
+
         // POST: VehicleController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -35,14 +36,33 @@ namespace EXSM3944_Demo.Controllers
         {
             try
             {
-                // TODO: Validate VIN uppercase.
-                // TODO: Validate VIN unique.
-                // TODO: Validate ModelYear less than or equal to current year plus one.
-                // TODO: Valudate PurchaseDate on or before current date.
-                // TODO: Validate SaleDate after PurchaseDate.
+                vehicle.VIN = vehicle.VIN.Trim().ToUpper();
+                if (Vehicles.Any(x => x.VIN == vehicle.VIN))
+                {
+                    ModelState.AddModelError(nameof(vehicle.VIN), "VIN already exists.");
+                }
+                if (vehicle.ModelYear > DateTime.Now.Year + 1)
+                {
+                    ModelState.AddModelError(nameof(vehicle.ModelYear), "Model year cannot be higher than next year.");
+                }
+                if (vehicle.PurchaseDate > DateTime.Now)
+                {
+                    ModelState.AddModelError(nameof(vehicle.PurchaseDate), "You cannot have purchased a vehicle in the future.");
+                }
+                if (vehicle.SaleDate < vehicle.PurchaseDate)
+                {
+                    ModelState.AddModelError(nameof(vehicle.SaleDate), "You cannot have sold a vehicle before you purchased it.");
+                }
                 vehicle.UserID = User.Identity.Name;
-                Vehicles.Add(vehicle);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    Vehicles.Add(vehicle);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View(vehicle);
+                }
             }
             catch
             {
@@ -64,13 +84,37 @@ namespace EXSM3944_Demo.Controllers
             try
             {
                 Vehicle target = Vehicles.Single(vehicle => vehicle.VIN == id);
-                target.Model = vehicle.Model;
-                target.Manufacturer = vehicle.Manufacturer;
-                target.Colour = vehicle.Colour;
-                target.ModelYear = vehicle.ModelYear;
-                target.PurchaseDate = vehicle.PurchaseDate;
-                target.SaleDate = vehicle.SaleDate;
-                return RedirectToAction(nameof(Index));
+                vehicle.VIN = vehicle.VIN.Trim().ToUpper();
+                if (Vehicles.Any(x => x.VIN == vehicle.VIN))
+                {
+                    ModelState.AddModelError(nameof(vehicle.VIN), "VIN already exists.");
+                }
+                if (vehicle.ModelYear > DateTime.Now.Year + 1)
+                {
+                    ModelState.AddModelError(nameof(vehicle.ModelYear), "Model year cannot be higher than next year.");
+                }
+                if (vehicle.PurchaseDate > DateTime.Now)
+                {
+                    ModelState.AddModelError(nameof(vehicle.PurchaseDate), "You cannot have purchased a vehicle in the future.");
+                }
+                if (vehicle.SaleDate < vehicle.PurchaseDate)
+                {
+                    ModelState.AddModelError(nameof(vehicle.SaleDate), "You cannot have sold a vehicle before you purchased it.");
+                }
+                if (ModelState.IsValid)
+                {
+                    target.Model = vehicle.Model;
+                    target.Manufacturer = vehicle.Manufacturer;
+                    target.Colour = vehicle.Colour;
+                    target.ModelYear = vehicle.ModelYear;
+                    target.PurchaseDate = vehicle.PurchaseDate;
+                    target.SaleDate = vehicle.SaleDate;
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View(vehicle);
+                }
             }
             catch
             {

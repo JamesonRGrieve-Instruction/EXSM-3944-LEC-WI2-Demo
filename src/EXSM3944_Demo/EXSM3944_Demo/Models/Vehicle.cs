@@ -6,7 +6,8 @@ namespace EXSM3944_Demo.Models
     {
         [Required]
         [StringLength(17, MinimumLength = 17)]
-        // TODO: Regular Expression
+        //https://stackoverflow.com/questions/30314850/vin-validation-regex
+        [RegularExpression(@"^[A-HJ-NPR-Za-hj-npr-z\d]{8}[\dX][A-HJ-NPR-Za-hj-npr-z\d]{2}\d{6}$")]
         public string VIN { get; set; }
         public string UserID { get; set; }
         [Required]
@@ -14,7 +15,7 @@ namespace EXSM3944_Demo.Models
         public int ModelYear { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 3)]
-        // TODO: Regular Expression
+        [RegularExpression(@"[A-Za-Z- ]{3,}")]
         public string Manufacturer { get; set; }
         [Required]
         [StringLength(50)]

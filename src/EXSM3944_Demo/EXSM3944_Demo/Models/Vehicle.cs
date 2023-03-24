@@ -15,7 +15,7 @@ namespace EXSM3944_Demo.Models
         public int ModelYear { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 3)]
-        [RegularExpression(@"[A-Za-Z- ]{3,}")]
+        [RegularExpression(@"[A-Za-z- ]{3,}")]
         public string Manufacturer { get; set; }
         [Required]
         [StringLength(50)]

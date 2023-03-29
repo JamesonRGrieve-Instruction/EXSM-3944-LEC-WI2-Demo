@@ -9,6 +9,7 @@ namespace EXSM3944_Demo.Data
         public PersonDatabaseContext() { }
 
         public virtual DbSet<Person> People { get; set; }
+        public virtual DbSet<Job> Jobs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -50,7 +51,7 @@ namespace EXSM3944_Demo.Data
                 entity.HasKey(model => model.ID);
 
                 entity.Property(model => model.Name)
-                    .HasColumnName("first_name")
+                    .HasColumnName("name")
                     .HasColumnType("varchar(30)")
                     .IsRequired()
                     .HasMaxLength(30)
@@ -58,18 +59,21 @@ namespace EXSM3944_Demo.Data
                     .HasCollation("utf8mb4_general_ci");
 
                 entity.Property(model => model.Description)
-                    .HasColumnName("last_name")
+                    .HasColumnName("description")
                     .HasColumnType("varchar(200)")
                     .IsRequired()
                     .HasMaxLength(200)
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
 
-                entity.HasMany(x => x.People).WithOne(y => y.Job).HasConstraintName("FK_Person_Job").HasForeignKey(y => y.JobID).OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasMany(x => x.People)
+                    .WithOne(y => y.Job)
+                    .HasConstraintName($"FK_{nameof(Person)}_{nameof(Job)}")
+                    .HasForeignKey(y => y.JobID)
+                    .OnDelete(DeleteBehavior.Restrict);
 
             });
         }
-
-        public DbSet<EXSM3944_Demo.Models.Job>? Job { get; set; }
     }
 }

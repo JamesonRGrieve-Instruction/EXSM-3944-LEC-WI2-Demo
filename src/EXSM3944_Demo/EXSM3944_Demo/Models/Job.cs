@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EXSM3944_Demo.Models
 {
@@ -7,8 +8,7 @@ namespace EXSM3944_Demo.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
-        [NotMapped]
+        [ValidateNever]
         public virtual IEnumerable<Person> People { get; set; } 
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EXSM3944_Demo.Data;
 using EXSM3944_Demo.Models;
+using EXSM3944_Demo.Models.DTO;
 
 namespace EXSM3944_Demo.Controllers
 {
@@ -22,7 +23,7 @@ namespace EXSM3944_Demo.Controllers
         // GET: People
         public async Task<IActionResult> Index()
         {
-            var personDatabaseContext = _context.People.Include(p => p.Job);
+            var personDatabaseContext = _context.People.Where(person => person.UserID == User.Identity.Name).Include(p => p.Job);
             return View(await personDatabaseContext.ToListAsync());
         }
 
@@ -48,7 +49,7 @@ namespace EXSM3944_Demo.Controllers
         // GET: People/Create
         public IActionResult Create()
         {
-            ViewData["JobID"] = new SelectList(_context.Job, "ID", "Description");
+            ViewData["JobID"] = new SelectList(_context.Jobs, "ID", "Description");
             return View();
         }
 
@@ -59,17 +60,65 @@ namespace EXSM3944_Demo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,JobID,FirstName,LastName")] Person person)
         {
-            ModelState.Remove("Job");
-            ModelState.Remove("UserID");
+            person.UserID = User.Identity.Name;
             if (ModelState.IsValid)
             {
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JobID"] = new SelectList(_context.Job, "ID", "Description", person.JobID);
+            ViewData["JobID"] = new SelectList(_context.Jobs, "ID", "Description", person.JobID);
             return View(person);
         }
+
+
+        // GET: People/Create
+        public IActionResult CreateWithJob()
+        {
+            SelectList JobItems = new SelectList(_context.Jobs, "ID", "Description");
+            ViewData["JobID"] = JobItems.Prepend(new SelectListItem("Create a new Job...", "0")); 
+            return View();
+        }
+
+        // POST: People/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateWithJob([Bind("PersonFirstName,PersonLastName,PersonJobID,JobName,JobDescription")] PersonJob dtoPersonJob)
+        {
+            if (ModelState.IsValid)
+            {
+                Person newPerson = new Person()
+                {
+                    UserID = User.Identity.Name,
+                    FirstName = dtoPersonJob.PersonFirstName,
+                    LastName = dtoPersonJob.PersonLastName
+                };
+                if (dtoPersonJob.PersonJobID != 0)
+                {
+                    newPerson.JobID = dtoPersonJob.PersonJobID;
+                }
+                else
+                {
+                    Job newJob = new Job()
+                    {
+                        Name = dtoPersonJob.JobName,
+                        Description = dtoPersonJob.JobDescription
+                    };
+                    _context.Jobs.Add(newJob);
+                    _context.SaveChanges();
+                    newPerson.JobID = newJob.ID;
+                }
+                _context.Add(newPerson);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            SelectList JobItems = new SelectList(_context.Jobs, "ID", "Description", dtoPersonJob.PersonJobID);
+            ViewData["JobID"] = JobItems.Prepend(new SelectListItem("Create a new Job...", "0"));
+            return View(dtoPersonJob);
+        }
+
 
         // GET: People/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -84,7 +133,7 @@ namespace EXSM3944_Demo.Controllers
             {
                 return NotFound();
             }
-            ViewData["JobID"] = new SelectList(_context.Job, "ID", "Description", person.JobID);
+            ViewData["JobID"] = new SelectList(_context.Jobs, "ID", "Description", person.JobID);
             return View(person);
         }
 
@@ -99,8 +148,6 @@ namespace EXSM3944_Demo.Controllers
             {
                 return NotFound();
             }
-            ModelState.Remove("Job");
-            ModelState.Remove("UserID");
             if (ModelState.IsValid)
             {
                 try
@@ -121,7 +168,7 @@ namespace EXSM3944_Demo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JobID"] = new SelectList(_context.Job, "ID", "Description", person.JobID);
+            ViewData["JobID"] = new SelectList(_context.Jobs, "ID", "Description", person.JobID);
             return View(person);
         }
 
@@ -158,14 +205,14 @@ namespace EXSM3944_Demo.Controllers
             {
                 _context.People.Remove(person);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PersonExists(int id)
         {
-          return (_context.People?.Any(e => e.ID == id)).GetValueOrDefault();
+            return (_context.People?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

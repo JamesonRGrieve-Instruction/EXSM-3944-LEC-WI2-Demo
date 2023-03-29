@@ -22,20 +22,20 @@ namespace EXSM3944_Demo.Controllers
         // GET: Jobs
         public async Task<IActionResult> Index()
         {
-              return _context.Job != null ? 
-                          View(await _context.Job.ToListAsync()) :
+              return _context.Jobs != null ? 
+                          View(await _context.Jobs.ToListAsync()) :
                           Problem("Entity set 'PersonDatabaseContext.Job'  is null.");
         }
 
         // GET: Jobs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Job == null)
+            if (id == null || _context.Jobs == null)
             {
                 return NotFound();
             }
 
-            var job = await _context.Job
+            var job = await _context.Jobs
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (job == null)
             {
@@ -71,12 +71,12 @@ namespace EXSM3944_Demo.Controllers
         // GET: Jobs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Job == null)
+            if (id == null || _context.Jobs == null)
             {
                 return NotFound();
             }
 
-            var job = await _context.Job.FindAsync(id);
+            var job = await _context.Jobs.FindAsync(id);
             if (job == null)
             {
                 return NotFound();
@@ -123,12 +123,12 @@ namespace EXSM3944_Demo.Controllers
         // GET: Jobs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Job == null)
+            if (id == null || _context.Jobs == null)
             {
                 return NotFound();
             }
 
-            var job = await _context.Job
+            var job = await _context.Jobs
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (job == null)
             {
@@ -143,14 +143,14 @@ namespace EXSM3944_Demo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Job == null)
+            if (_context.Jobs == null)
             {
                 return Problem("Entity set 'PersonDatabaseContext.Job'  is null.");
             }
-            var job = await _context.Job.FindAsync(id);
+            var job = await _context.Jobs.FindAsync(id);
             if (job != null)
             {
-                _context.Job.Remove(job);
+                _context.Jobs.Remove(job);
             }
             
             await _context.SaveChangesAsync();
@@ -159,7 +159,7 @@ namespace EXSM3944_Demo.Controllers
 
         private bool JobExists(int id)
         {
-          return (_context.Job?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Jobs?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

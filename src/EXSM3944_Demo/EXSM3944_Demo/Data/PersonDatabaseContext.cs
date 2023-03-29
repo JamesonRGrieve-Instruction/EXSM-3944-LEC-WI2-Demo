@@ -1,4 +1,5 @@
-﻿using EXSM3944_Demo.Models;
+﻿using EXSM3944_Demo.Migrations.PersonDatabase;
+using EXSM3944_Demo.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EXSM3944_Demo.Data
@@ -41,7 +42,34 @@ namespace EXSM3944_Demo.Data
                     .HasMaxLength(30)
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
+
+            });
+            modelBuilder.Entity<Job>(entity =>
+            {
+                entity.ToTable("jobs");
+                entity.HasKey(model => model.ID);
+
+                entity.Property(model => model.Name)
+                    .HasColumnName("first_name")
+                    .HasColumnType("varchar(30)")
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .HasCharSet("utf8mb4")
+                    .HasCollation("utf8mb4_general_ci");
+
+                entity.Property(model => model.Description)
+                    .HasColumnName("last_name")
+                    .HasColumnType("varchar(200)")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasCharSet("utf8mb4")
+                    .HasCollation("utf8mb4_general_ci");
+
+                entity.HasMany(x => x.People).WithOne(y => y.Job).HasConstraintName("FK_Person_Job").HasForeignKey(y => y.JobID).OnDelete(DeleteBehavior.Restrict);
+
             });
         }
+
+        public DbSet<EXSM3944_Demo.Models.Job>? Job { get; set; }
     }
 }

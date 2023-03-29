@@ -9,7 +9,7 @@ namespace EXSM3944_Demo.Controllers
     
 
     [Authorize]
-    public class PersonController : Controller
+    public class PersonController_Old : Controller
     {
         private static PersonDatabaseContext context = new PersonDatabaseContext();
 

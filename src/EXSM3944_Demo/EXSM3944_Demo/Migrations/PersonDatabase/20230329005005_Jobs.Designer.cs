@@ -2,6 +2,7 @@
 using EXSM3944_Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXSM3944_Demo.Migrations.PersonDatabase
 {
     [DbContext(typeof(PersonDatabaseContext))]
-    partial class PersonDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230329005005_Jobs")]
+    partial class Jobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

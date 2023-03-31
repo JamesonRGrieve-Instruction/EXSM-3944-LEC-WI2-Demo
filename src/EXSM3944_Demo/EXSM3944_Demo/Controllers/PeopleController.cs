@@ -23,12 +23,37 @@ namespace EXSM3944_Demo.Controllers
         // GET: People
         public async Task<IActionResult> Index()
         {
+            var personDatabaseContext = _context.People.Where(person => person.UserID == User.Identity.Name);
+            return View(await personDatabaseContext.ToListAsync());
+        }
+
+        // GET: People
+        public async Task<IActionResult> List()
+        {
             var personDatabaseContext = _context.People.Where(person => person.UserID == User.Identity.Name).Include(p => p.Job);
             return View(await personDatabaseContext.ToListAsync());
         }
 
         // GET: People/Details/5
         public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.People == null)
+            {
+                return NotFound();
+            }
+
+            var person = await _context.People
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            return View(person);
+        }
+
+        // GET: People/Details/5
+        public async Task<IActionResult> DetailedDetails(int? id)
         {
             if (id == null || _context.People == null)
             {

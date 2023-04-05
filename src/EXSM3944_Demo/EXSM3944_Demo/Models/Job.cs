@@ -6,9 +6,12 @@ namespace EXSM3944_Demo.Models
     public class Job
     {
         public int ID { get; set; }
+        public int IndustryID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         [ValidateNever]
-        public virtual IEnumerable<Person> People { get; set; } 
+        public virtual IEnumerable<Person> People { get; set; }
+        [ValidateNever]
+        public virtual Industry Industry { get; set; }
     }
 }

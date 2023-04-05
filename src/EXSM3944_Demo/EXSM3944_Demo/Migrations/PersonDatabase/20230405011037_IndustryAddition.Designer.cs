@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXSM3944_Demo.Migrations.PersonDatabase
 {
     [DbContext(typeof(PersonDatabaseContext))]
-    [Migration("20230329005005_Jobs")]
-    partial class Jobs
+    [Migration("20230405011037_IndustryAddition")]
+    partial class IndustryAddition
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,35 @@ namespace EXSM3944_Demo.Migrations.PersonDatabase
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("EXSM3944_Demo.Models.Industry", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("description")
+                        .UseCollation("utf8mb4_general_ci");
+
+                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Description"), "utf8mb4");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8mb4_general_ci");
+
+                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Name"), "utf8mb4");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("industry", (string)null);
+                });
 
             modelBuilder.Entity("EXSM3944_Demo.Models.Job", b =>
                 {
@@ -31,21 +60,26 @@ namespace EXSM3944_Demo.Migrations.PersonDatabase
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
-                        .HasColumnName("last_name")
+                        .HasColumnName("description")
                         .UseCollation("utf8mb4_general_ci");
 
                     MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Description"), "utf8mb4");
+
+                    b.Property<int>("IndustryID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)")
-                        .HasColumnName("first_name")
+                        .HasColumnName("name")
                         .UseCollation("utf8mb4_general_ci");
 
                     MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Name"), "utf8mb4");
 
                     b.HasKey("ID");
+
+                    b.HasIndex(new[] { "IndustryID" }, "FK_Job_Industry");
 
                     b.ToTable("jobs", (string)null);
                 });
@@ -83,9 +117,21 @@ namespace EXSM3944_Demo.Migrations.PersonDatabase
 
                     b.HasKey("ID");
 
-                    b.HasIndex("JobID");
+                    b.HasIndex(new[] { "JobID" }, "FK_Person_Job");
 
                     b.ToTable("people", (string)null);
+                });
+
+            modelBuilder.Entity("EXSM3944_Demo.Models.Job", b =>
+                {
+                    b.HasOne("EXSM3944_Demo.Models.Industry", "Industry")
+                        .WithMany("Jobs")
+                        .HasForeignKey("IndustryID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Job_Industry");
+
+                    b.Navigation("Industry");
                 });
 
             modelBuilder.Entity("EXSM3944_Demo.Models.Person", b =>
@@ -98,6 +144,11 @@ namespace EXSM3944_Demo.Migrations.PersonDatabase
                         .HasConstraintName("FK_Person_Job");
 
                     b.Navigation("Job");
+                });
+
+            modelBuilder.Entity("EXSM3944_Demo.Models.Industry", b =>
+                {
+                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("EXSM3944_Demo.Models.Job", b =>

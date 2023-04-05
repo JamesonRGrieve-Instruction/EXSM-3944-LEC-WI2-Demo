@@ -11,11 +11,11 @@ using EXSM3944_Demo.Models.DTO;
 
 namespace EXSM3944_Demo.Controllers
 {
-    public class PeopleController : Controller
+    public class PeopleController_LessOld : Controller
     {
         private readonly PersonDatabaseContext _context;
 
-        public PeopleController(PersonDatabaseContext context)
+        public PeopleController_LessOld(PersonDatabaseContext context)
         {
             _context = context;
         }

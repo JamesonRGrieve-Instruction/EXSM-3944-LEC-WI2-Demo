@@ -10,11 +10,11 @@ using EXSM3944_Demo.Models;
 
 namespace EXSM3944_Demo.Controllers
 {
-    public class JobsController : Controller
+    public class JobsController_LessOld : Controller
     {
         private readonly PersonDatabaseContext _context;
 
-        public JobsController(PersonDatabaseContext context)
+        public JobsController_LessOld(PersonDatabaseContext context)
         {
             _context = context;
         }

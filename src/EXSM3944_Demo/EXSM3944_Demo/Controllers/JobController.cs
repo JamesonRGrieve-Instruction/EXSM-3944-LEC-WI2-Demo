@@ -45,6 +45,11 @@ namespace EXSM3944_Demo.Controllers
             return View(job);
         }
 
+        public List<Job> GetJobsByIndustry(int industryID)
+        {
+            return _context.Jobs.Where(job => job.IndustryID == industryID).ToList();
+        }
+
         // GET: Job/Create
         public IActionResult Create()
         {

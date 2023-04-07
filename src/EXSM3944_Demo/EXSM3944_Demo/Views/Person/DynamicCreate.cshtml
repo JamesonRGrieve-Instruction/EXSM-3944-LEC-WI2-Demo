@@ -1,0 +1,113 @@
+﻿@model EXSM3944_Demo.Models.DTO.DynamicPerson
+
+@{
+    ViewData["Title"] = "Create With Job";
+}
+
+<h1>Create</h1>
+
+<h4>Person</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="DynamicCreate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PersonFirstName" class="control-label"></label>
+                <input asp-for="PersonFirstName" class="form-control" />
+                <span asp-validation-for="PersonFirstName" class=" text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PersonLastName" class="control-label"></label>
+                <input asp-for="PersonLastName" class="form-control" />
+                <span asp-validation-for="PersonLastName" class="text-danger"></span>
+            </div>            
+            <div class="form-group">
+                <label asp-for="JobIndustryID" class="control-label"></label>
+                <select asp-for="JobIndustryID" class="form-control" asp-items="ViewBag.IndustryID" onchange="handleIndustryDropdown(this.value)">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IndustryName" class="control-label"></label>
+                <input asp-for="IndustryName" class="form-control" />
+                <span asp-validation-for="IndustryName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IndustryDescription" class="control-label"></label>
+                <input asp-for="IndustryDescription" class="form-control" />
+                <span asp-validation-for="IndustryDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PersonJobID" class="control-label"></label>
+                <select asp-for="PersonJobID" class="form-control" asp-items="ViewBag.JobID" disabled onchange="handleJobDropdown(this.value)">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="JobName" class="control-label"></label>
+                <input asp-for="JobName" class="form-control" />
+                <span asp-validation-for="JobName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="JobDescription" class="control-label"></label>
+                <input asp-for="JobDescription" class="form-control" />
+                <span asp-validation-for="JobDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        const jobDropdown = document.querySelector("#PersonJobID");
+        const industryFields = [
+            document.querySelector("#IndustryName"),
+            document.querySelector("label[for=IndustryName]"),
+            document.querySelector("#IndustryDescription"),
+            document.querySelector("label[for=IndustryDescription]")
+        ];
+        const jobFields = [
+            document.querySelector("#JobName"),
+            document.querySelector("label[for=JobName]"),
+            document.querySelector("#JobDescription"),
+            document.querySelector("label[for=JobDescription]")
+        ];
+        function handleIndustryDropdown(newValue) {
+            jobDropdown.value = 0;
+            if (newValue == 0) {
+                jobDropdown.disabled = true;
+                for (element of industryFields) element.hidden = false;
+                for (element of jobFields) element.hidden = false;
+            }
+            else {
+                fetch('@Url.Action("GetJobsByIndustry", "Job")' + '?industryID=' + newValue)
+                    .then((response) => response.json())
+                    .then(json => {
+                        for (element of industryFields) element.hidden = true;
+                        if (json.length == 0) {
+                            jobDropdown.disabled = true
+                        }
+                        else {
+                            for (selectItem of jobDropdown.children) {
+                                selectItem.hidden = !json.some(job => job.id == selectItem.value) && selectItem.value != 0
+                            }
+                            jobDropdown.disabled = false;
+
+                        }
+                    });
+            }
+        }
+        function handleJobDropdown(newValue) {
+            for (element of jobFields) element.hidden = newValue != 0;
+        }
+    </script>
+}

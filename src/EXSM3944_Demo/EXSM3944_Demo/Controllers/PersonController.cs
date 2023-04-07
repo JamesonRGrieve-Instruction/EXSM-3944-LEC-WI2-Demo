@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EXSM3944_Demo.Data;
 using EXSM3944_Demo.Models;
 using Microsoft.AspNetCore.Authorization;
+using EXSM3944_Demo.Models.DTO;
 
 namespace EXSM3944_Demo.Controllers
 {
@@ -69,6 +70,76 @@ namespace EXSM3944_Demo.Controllers
             }
             ViewData["JobID"] = new SelectList(_context.Jobs, "ID", "Description", person.JobID);
             return View(person);
+        }
+
+        // GET: People/Create
+        public IActionResult DynamicCreate()
+        {
+            SelectList JobItems = new SelectList(_context.Jobs, "ID", "Name");
+            SelectList IndustryItems = new SelectList(_context.Industry, "ID", "Name");
+            ViewData["JobID"] = JobItems.Prepend(new SelectListItem("Create a new Job...", "0"));
+            ViewData["IndustryID"] = IndustryItems.Prepend(new SelectListItem("Create a new Industry...", "0"));
+            return View();
+        }
+
+        // POST: People/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DynamicCreate([Bind($"{nameof(DynamicPerson.PersonFirstName)},{nameof(DynamicPerson.PersonLastName)},{nameof(DynamicPerson.PersonJobID)},{nameof(DynamicPerson.JobName)},{nameof(DynamicPerson.JobDescription)},{nameof(DynamicPerson.JobIndustryID)},{nameof(DynamicPerson.IndustryName)},{nameof(DynamicPerson.IndustryDescription)}")] DynamicPerson dtoDynamicPerson)
+        {
+            if (ModelState.IsValid)
+            {
+                if (dtoDynamicPerson.JobIndustryID == 0 && dtoDynamicPerson.PersonJobID != 0)
+                {
+                    throw new Exception("You cannot have a Job with no Industry!");
+                }
+
+                if (dtoDynamicPerson.JobIndustryID == 0)
+                {
+                    Industry newIndustry = new Industry()
+                    {
+                        Name = dtoDynamicPerson.IndustryName,
+                        Description = dtoDynamicPerson.IndustryDescription
+                    };
+                    _context.Industry.Add(newIndustry);
+                    _context.SaveChanges();
+                    dtoDynamicPerson.JobIndustryID = newIndustry.ID;
+
+                }
+                if (dtoDynamicPerson.PersonJobID == 0)
+                {
+                    Job newJob = new Job()
+                    {
+                        Name = dtoDynamicPerson.JobName,
+                        Description = dtoDynamicPerson.JobDescription,
+                        IndustryID = dtoDynamicPerson.JobIndustryID
+                    };
+                    _context.Jobs.Add(newJob);
+                    _context.SaveChanges();
+                    dtoDynamicPerson.PersonJobID = newJob.ID;
+                }
+                Person newPerson = new Person()
+                {
+                    UserID = User.Identity.Name,
+                    FirstName = dtoDynamicPerson.PersonFirstName,
+                    LastName = dtoDynamicPerson.PersonLastName,
+                    JobID = dtoDynamicPerson.PersonJobID
+                };
+                _context.Add(newPerson);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                SelectList JobItems = new SelectList(_context.Jobs, "ID", "Name");
+                SelectList IndustryItems = new SelectList(_context.Industry, "ID", "Name");
+                ViewData["JobID"] = JobItems.Prepend(new SelectListItem("Create a new Job...", "0"));
+                ViewData["IndustryID"] = IndustryItems.Prepend(new SelectListItem("Create a new Industry...", "0"));
+                return View(dtoDynamicPerson);
+            }
+
         }
 
         // GET: Person/Edit/5
@@ -157,14 +228,14 @@ namespace EXSM3944_Demo.Controllers
             {
                 _context.People.Remove(person);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PersonExists(int id)
         {
-          return (_context.People?.Any(e => e.ID == id)).GetValueOrDefault();
+            return (_context.People?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }
